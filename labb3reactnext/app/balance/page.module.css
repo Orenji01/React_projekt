@@ -1,0 +1,46 @@
+.balanceContainer {
+    min-height: 800px;
+    padding-top: 60px;
+}
+
+.balanceCard {
+    max-width: 600px;
+    height: 90%;
+    min-height: 500px;
+    margin: 0 auto;
+    border: 1px solid black;
+    padding: 3rem;
+    background: grey;
+}
+
+.balanceList {
+    border: 1px solid black;
+    padding: 40px;
+    color: black;
+    background: white;
+}
+
+.balanceItem {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    background: white;
+    padding: 0.8rem;
+}
+
+.balanceItem h2 {
+    font-size: 24px;
+}
+
+.title {
+    text-align: center;
+    color: black;
+    padding-bottom: 24px;
+    font-weight: 500;
+    font-size: 36px;
+}
+
+.text {
+    text-align: center;
+    color: black;
+}
