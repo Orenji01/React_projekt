@@ -21,9 +21,9 @@ export default function AddTransaction({}) {
 	}, []);
 
 	return (
-		<div>
+		<div id="addTransaction">
 			Bästa sidan ever
-			{<p>{data && data.message}</p>}
+			{<p className="p-element">{data && data.message}</p>}
 		</div>
 	);
 }
