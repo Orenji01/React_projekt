@@ -17,6 +17,7 @@
 
 #overview-page .listBox {
 	flex-grow: 1;
+	overflow-y: scroll;
 }
 
 #overview-page .plusLink {

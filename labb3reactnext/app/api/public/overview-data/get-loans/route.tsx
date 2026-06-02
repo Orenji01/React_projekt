@@ -1,14 +1,34 @@
 import { NextResponse } from "next/server";
+import { getDB } from "@/lib/mongodbnext";
+// import { getDB } from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
-export default function GET() {
-	const data = [
-		{ id: 1, name: "Lån1", amount: 110000 },
-		{ id: 2, name: "Lån2", amount: 13000 },
-		{ id: 3, name: "Lån3", amount: 1500 },
-	];
+export interface overViewObject {
+	_id: ObjectId;
+	name: string;
+	amount: number;
+}
+
+export async function GET() {
+	const mongo = await getDB();
+
+	const data = await mongo.collection<overViewObject>("loans").find().toArray();
+
+	if (data.length === 0) {
+		return NextResponse.json(
+			{ ok: false, data: [], message: "No data found" },
+			{ status: 404 },
+		);
+	}
+
+	// const data = [
+	// 	{ id: 1, name: "Inkomst1", amount: 33000 },
+	// 	{ id: 2, name: "Inkomst2", amount: 4032 },
+	// 	{ id: 3, name: "Inkomst3", amount: 501 },
+	// ];
 
 	return NextResponse.json(
-		{ data: data, message: "This message from loan route" },
+		{ ok: true, data: data, message: "This message from loans route" },
 		{ status: 200 },
 	);
 }

@@ -1,12 +1,17 @@
 "use client";
+import { getOverviewData } from "../functions/functions";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { sourceItem } from "../types/overViewTypes";
+import { useEffect, useState } from "react";
 
 interface Overwiewbox {
 	type: string;
 }
 
 export default function Overviewbox({ type }: Overwiewbox) {
+	const [data, setData] = useState<sourceItem[]>([]);
+
 	const setNav = () => {
 		return (
 			<Link className="plusLink" href={`/add${type}`}>
@@ -14,6 +19,22 @@ export default function Overviewbox({ type }: Overwiewbox) {
 			</Link>
 		);
 	};
+
+	useEffect(() => {
+		async function fetchData() {
+			const response: sourceItem[] = (await getOverviewData(type)) ?? [];
+			setData(response ?? []);
+		}
+		fetchData();
+	}, [type]);
+
+	function total() {
+		let totalSum = 0;
+		for (const item of data) {
+			totalSum += item.amount;
+		}
+		return totalSum;
+	}
 
 	const setDesc = () => {
 		if (type === "savings") {
@@ -42,16 +63,15 @@ export default function Overviewbox({ type }: Overwiewbox) {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>*namn</td>
-							<td>*summa</td>
-						</tr>
-						<tr>
-							<td>*namn</td>
-							<td>*summa</td>
-						</tr>
+						{data.map((item, index) => (
+							<tr key={index}>
+								<td>{item.name}</td>
+								<td>{item.amount}</td>
+							</tr>
+						))}
 					</tbody>
 				</table>
+				Total {total()}
 			</div>
 			{setNav()}
 		</div>

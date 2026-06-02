@@ -13,7 +13,7 @@ export async function GET() {
 	const mongo = await getDB();
 
 	const data = await mongo
-		.collection<overViewObject>("income")
+		.collection<overViewObject>("savings")
 		.find()
 		.toArray();
 
@@ -31,7 +31,7 @@ export async function GET() {
 	// ];
 
 	return NextResponse.json(
-		{ ok: true, data: data, message: "This message from income route" },
+		{ ok: true, data: data, message: "This message from savings route" },
 		{ status: 200 },
 	);
 }
