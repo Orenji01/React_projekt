@@ -13,8 +13,8 @@ export async function GET() {
 	const mongo = await getDB();
 
 	const data = await mongo
-		.collection<overViewObject>("expenses")
-		.find()
+		.collection<overViewObject>("cashflow")
+		.find({ type: "expense" })
 		.toArray();
 
 	if (data.length === 0) {
@@ -24,14 +24,8 @@ export async function GET() {
 		);
 	}
 
-	// const data = [
-	// 	{ id: 1, name: "Inkomst1", amount: 33000 },
-	// 	{ id: 2, name: "Inkomst2", amount: 4032 },
-	// 	{ id: 3, name: "Inkomst3", amount: 501 },
-	// ];
-
 	return NextResponse.json(
-		{ ok: true, data: data, message: "This message from expenses route" },
+		{ ok: true, data: data, message: "This message from expense route" },
 		{ status: 200 },
 	);
 }
