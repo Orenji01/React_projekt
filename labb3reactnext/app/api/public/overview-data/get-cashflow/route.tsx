@@ -1,25 +1,24 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
-
-import { overViewObject } from "@/app/types/overViewTypes";
+import { cashflowResponse } from "@/app/types/overViewTypes";
 
 export async function GET() {
 	const mongo = await getDB();
 
 	const data = await mongo
-		.collection<overViewObject>("cashflow")
-		.find({ type: "income" })
+		.collection<cashflowResponse>("cashflow")
+		.find()
 		.toArray();
 
 	if (data.length === 0) {
 		return NextResponse.json(
-			{ ok: false, data: [], message: "No data found" },
+			{ ok: false, message: "no data found", data: [] },
 			{ status: 404 },
 		);
 	}
 
 	return NextResponse.json(
-		{ ok: true, data: data, message: "This message from income route" },
+		{ ok: true, message: "this message from get-cashflow", data: data },
 		{ status: 200 },
 	);
 }

@@ -2,7 +2,7 @@
 import { getOverviewData } from "../functions/functions";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { sourceItem } from "../types/overViewTypes";
+import { sourceItem, cashFlowItem } from "../types/overViewTypes";
 import { useEffect, useState } from "react";
 
 interface Overwiewbox {
@@ -10,7 +10,7 @@ interface Overwiewbox {
 }
 
 export default function Overviewbox({ type }: Overwiewbox) {
-	const [data, setData] = useState<sourceItem[]>([]);
+	const [data, setData] = useState<sourceItem[] | cashFlowItem[]>([]);
 
 	const setNav = () => {
 		return (
@@ -20,10 +20,47 @@ export default function Overviewbox({ type }: Overwiewbox) {
 		);
 	};
 
+	function setIncomeOrExpenses(
+		transactions: cashFlowItem[],
+		type: "income" | "expense",
+	): cashFlowItem[] | undefined {
+		if (!transactions || transactions.length === 0) return;
+		const extracted: cashFlowItem[] = [];
+		let index = 0;
+		for (const t of transactions) {
+			if (t.type === type) {
+				extracted.unshift(transactions[index]);
+			}
+			index++;
+			console.log("extracted: ", extracted);
+		}
+		return extracted;
+	}
+
 	useEffect(() => {
 		async function fetchData() {
-			const response: sourceItem[] = (await getOverviewData(type)) ?? [];
-			setData(response ?? []);
+			if (type === "income" || type === "expense") {
+				const transactions = (await getOverviewData(type)) ?? [];
+
+				if (type === "income") {
+					const income = setIncomeOrExpenses(
+						transactions as cashFlowItem[],
+						type,
+					);
+					setData((income as cashFlowItem[]) ?? []);
+				}
+				if (type === "expense") {
+					const expense = setIncomeOrExpenses(
+						transactions as cashFlowItem[],
+						type,
+					);
+					setData((expense as cashFlowItem[]) ?? []);
+				}
+			}
+			if (type === "loans" || type === "savings") {
+				const transactions = (await getOverviewData(type)) ?? [];
+				setData((transactions as sourceItem[]) ?? []);
+			}
 		}
 		fetchData();
 	}, [type]);
@@ -46,7 +83,7 @@ export default function Overviewbox({ type }: Overwiewbox) {
 		if (type === "income") {
 			return "Inkomster";
 		}
-		if (type === "expenses") {
+		if (type === "expense") {
 			return "Utgifter";
 		}
 	};
