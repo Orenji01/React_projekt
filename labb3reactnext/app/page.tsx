@@ -18,14 +18,13 @@ interface responseData {
 export default function Home() {
 	const [data, setData] = useState<responseData | null>(null);
 
-	async function getData() {
-		const response = await fetch("/api/public/savegoal");
-		const res: responseData = await response.json();
-		setData(res);
-		console.log(res);
-	}
-
 	useEffect(() => {
+		async function getData() {
+			const response = await fetch("/api/public/savegoal");
+			const res: responseData = await response.json();
+			setData(res);
+			console.log(res);
+		}
 		getData();
 	}, []);
 
