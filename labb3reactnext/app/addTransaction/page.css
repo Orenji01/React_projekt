@@ -15,6 +15,15 @@ button {
 	margin-left: auto;
 	padding: 0 5px;
 }
+
+button:disabled {
+	border: 1px solid rgb(121, 121, 121);
+	border-radius: 2px;
+	margin-left: auto;
+	padding: 0 5px;
+	color: rgb(121, 121, 121);
+}
+
 .container {
 	display: flex;
 	flex-direction: column;

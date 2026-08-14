@@ -5,6 +5,13 @@ import { cashflowResponse } from "@/app/types/overViewTypes";
 export async function GET() {
 	const mongo = await getDB();
 
+	if (mongo === 0) {
+		return NextResponse.json(
+			{ ok: false, message: "No instance of mongo running", data: [] },
+			{ status: 500 },
+		);
+	}
+
 	const data = await mongo
 		.collection<cashflowResponse>("cashflow")
 		.find()

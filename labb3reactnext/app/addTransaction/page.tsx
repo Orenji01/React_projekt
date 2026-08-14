@@ -7,18 +7,23 @@ interface responseData {
 	message: string;
 }
 
-export default function AddTransaction({}) {
-	const [data, setData] = useState<responseData | null>(null);
+export interface transactionData {
+	id: number;
+	type: string;
+	name: string;
+	recurring?: boolean;
+	amount: string;
+	date: string;
+}
 
+export default function AddTransaction({}) {
 	const [name, setName] = useState<string>("");
-	// const [nameLengtWarning, setNameLengtWarning] = useState<string>("");
 	const [amount, setAmount] = useState<string>("");
 	const [date, setDate] = useState<string>("");
-	const [transactionType, setTransactionType] = useState<string>("");
+	const [transactionType, setTransactionType] = useState<string>("expense");
 	const [currency, setCurrency] = useState<string>("kr");
 	const [recurring, setrecurring] = useState<boolean>(false);
-
-	const handleClick = () => {};
+	const [statusMessage, setStatusMessage] = useState<string>("");
 
 	useEffect(() => {
 		console.log(date);
@@ -34,21 +39,51 @@ export default function AddTransaction({}) {
 	}, [recurring]);
 
 	useEffect(() => {
-		async function getData() {
-			const response = await fetch("/api/public/save_post");
-			const res: responseData = await response.json();
-			setData(res);
-			console.log(res.message);
+		if (statusMessage === "") {
+			return;
 		}
-		getData();
-	}, []);
+		setTimeout(() => {
+			setStatusMessage("");
+		}, 4000);
+	}, [statusMessage]);
+
+	async function saveData(transactionData: transactionData) {
+		const response = await fetch("/api/public/save_post", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(transactionData),
+		});
+		const res: responseData = await response.json();
+		if (res.ok) {
+			setStatusMessage(res.message);
+			console.log(res.message);
+			clearData();
+		}
+	}
+
+	function clearData() {
+		setName("");
+		setAmount("");
+		setDate("");
+		setTransactionType("");
+		setrecurring(false);
+		setTransactionType("expense");
+	}
+
+	const handleClick = () => {
+		const transactionData: transactionData = {
+			id: Date.now(),
+			type: transactionType,
+			name: name,
+			recurring: recurring,
+			amount: amount,
+			date: date,
+		};
+		saveData(transactionData);
+	};
 
 	return (
 		<div className="container">
-			<div id="addTransaction">
-				Bästa sidan ever
-				{data && <p className="p-element">{data.message}</p>}
-			</div>
 			<h1>Lägg till Utgift/Inkomst</h1>
 			<div className="inputBox">
 				<label title="Transaktions namn">
@@ -58,6 +93,7 @@ export default function AddTransaction({}) {
 							setName(e.target.value);
 						}}
 						maxLength={15}
+						value={name}
 					/>{" "}
 					{name.length} / 15
 				</label>
@@ -82,6 +118,7 @@ export default function AddTransaction({}) {
 					Datum
 					<input
 						type="date"
+						value={date}
 						onChange={(e) => {
 							setDate(e.currentTarget.value);
 						}}
@@ -101,7 +138,7 @@ export default function AddTransaction({}) {
 								// console.log(e.target.value);
 								setTransactionType(e.target.value);
 							}}
-							defaultChecked
+							checked={transactionType === "expense"}
 						/>{" "}
 						Inkomst
 						<input
@@ -113,6 +150,7 @@ export default function AddTransaction({}) {
 								// console.log(e.target.value);
 								setTransactionType(e.target.value);
 							}}
+							checked={transactionType === "income"}
 						/>
 					</label>
 				</div>
@@ -128,7 +166,10 @@ export default function AddTransaction({}) {
 					/>
 				</label>
 			</div>
-			<button onClick={handleClick}>Test</button>
+			<button disabled={!name || !amount || !date} onClick={handleClick}>
+				Test
+			</button>
+			<p>{statusMessage}</p>
 		</div>
 	);
 }
