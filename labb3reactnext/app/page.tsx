@@ -59,10 +59,6 @@ export default function Home() {
 					>
 						Documentation
 					</a>
-					<Link href="./addTransaction" className="flex gap-4">
-						Till projektets första sida!
-						<ArrowBigRight />
-					</Link>
 				</div>
 			</main>
 		</div>

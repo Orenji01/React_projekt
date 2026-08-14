@@ -1,0 +1,33 @@
+.inputBox {
+	background-color: lightgray;
+	padding: 0 10%;
+}
+
+input {
+	background-color: white;
+	border: 1px solid black;
+	border-radius: 0.25em;
+}
+
+button {
+	border: 1px solid black;
+	border-radius: 2px;
+	margin-left: auto;
+	padding: 0 5px;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+	width: 40rem;
+}
+
+label {
+	display: flex;
+	justify-content: space-between;
+}
+
+.radioBox {
+	display: flex;
+	justify-content: space-between;
+}

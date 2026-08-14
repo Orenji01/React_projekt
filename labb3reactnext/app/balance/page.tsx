@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { sourceItem, sourceResponse } from "../types/overViewTypes";
 import styles from "./page.module.css";
+import { Divide } from "lucide-react";
 
 export default function BalancePage() {
 	const [income, setIncome] = useState<sourceItem[]>([]);
@@ -48,42 +49,58 @@ export default function BalancePage() {
 
 					<h2>Inkomster</h2>
 					<ul className={styles.balanceList}>
-						{income.map((item) => (
-							<li key={item._id} className={styles.balanceItem}>
-								<span>{item.name}</span>
-								<span>{item.amount} kr</span>
-							</li>
-						))}
+						{income.length ? (
+							income.map((item) => (
+								<li key={item._id} className={styles.balanceItem}>
+									<span>{item.name}</span>
+									<span>{item.amount} kr</span>
+								</li>
+							))
+						) : (
+							<div>Hämtar...</div>
+						)}
 					</ul>
 
 					<h2>Utgifter</h2>
 					<ul className={styles.balanceList}>
-						{expense.map((item) => (
-							<li key={item._id} className={styles.balanceItem}>
-								<span>{item.name}</span>
-								<span>{item.amount} kr</span>
-							</li>
-						))}
+						{expense.length ? (
+							expense.map((item) => (
+								<li key={item._id} className={styles.balanceItem}>
+									<span>{item.name}</span>
+									<span>{item.amount} kr</span>
+								</li>
+							))
+						) : (
+							<div>Hämtar...</div>
+						)}
 					</ul>
 
 					<h2>Lån</h2>
 					<ul className={styles.balanceList}>
-						{loans.map((item) => (
-							<li key={item._id} className={styles.balanceItem}>
-								<span>{item.name}</span>
-								<span>{item.amount} kr</span>
-							</li>
-						))}
+						{loans.length ? (
+							loans.map((item) => (
+								<li key={item._id} className={styles.balanceItem}>
+									<span>{item.name}</span>
+									<span>{item.amount} kr</span>
+								</li>
+							))
+						) : (
+							<div>Hämtar...</div>
+						)}
 					</ul>
 
 					<h2>Sparande</h2>
 					<ul className={styles.balanceList}>
-						{savings.map((item) => (
-							<li key={item._id} className={styles.balanceItem}>
-								<span>{item.name}</span>
-								<span>{item.amount} kr</span>
-							</li>
-						))}
+						{savings.length ? (
+							savings.map((item) => (
+								<li key={item._id} className={styles.balanceItem}>
+									<span>{item.name}</span>
+									<span>{item.amount} kr</span>
+								</li>
+							))
+						) : (
+							<div>Hämtar...</div>
+						)}
 					</ul>
 				</div>
 			</section>
