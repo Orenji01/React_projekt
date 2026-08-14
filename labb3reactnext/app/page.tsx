@@ -1,7 +1,34 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowBigRight } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface responseData {
+	id: number;
+	name: string;
+	amount: number;
+	perMonth: number;
+	interest?: number;
+	inflation?: number;
+	targetDate: string;
+	startDate: string;
+}
+
 export default function Home() {
+	const [data, setData] = useState<responseData | null>(null);
+
+	async function getData() {
+		const response = await fetch("/api/public/savegoal");
+		const res: responseData = await response.json();
+		setData(res);
+		console.log(res);
+	}
+
+	useEffect(() => {
+		getData();
+	}, []);
+
 	return (
 		<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
 			<main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -59,6 +86,10 @@ export default function Home() {
 					>
 						Documentation
 					</a>
+					<Link href="./addTransaction" className="flex gap-4">
+						Till projektets första sida!
+						<ArrowBigRight />
+					</Link>
 				</div>
 			</main>
 		</div>
