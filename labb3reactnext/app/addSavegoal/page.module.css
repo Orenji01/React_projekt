@@ -1,0 +1,39 @@
+#form {
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 90%;
+  height: 90%;
+}
+
+.input {
+  background-color: white;
+}
+
+.formSection {
+  display: flex;
+  justify-content: space-between;
+}
+
+#title {
+  font-size: 24px;
+  text-align: center;
+  padding-bottom: 25px;
+}
+
+#button {
+  background-color: white;
+  width: 100px;
+  height: 50px;
+  align-self: center;
+  margin-bottom: 5px;
+  margin-top: 25px;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
