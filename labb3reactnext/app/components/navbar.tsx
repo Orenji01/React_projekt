@@ -18,6 +18,9 @@ const Navbar = () => {
           <li>
             <Link href="addSavegoal">Nytt sparmål</Link>
           </li>
+          <li>
+            <Link href="editSavegoal">Redigera sparmål</Link>
+          </li>
         </ul>
       </nav>
     </>
