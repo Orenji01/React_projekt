@@ -22,6 +22,7 @@ export default function AddTransaction({}) {
 	const [date, setDate] = useState<string>("");
 	const [transactionType, setTransactionType] = useState<string>("expense");
 	const [currency, setCurrency] = useState<string>("kr");
+	// Hade en ide med currency som jag inte implementerade
 	const [recurring, setrecurring] = useState<boolean>(false);
 	const [statusMessage, setStatusMessage] = useState<string>("");
 
@@ -42,9 +43,12 @@ export default function AddTransaction({}) {
 		if (statusMessage === "") {
 			return;
 		}
-		setTimeout(() => {
+		const timer = setTimeout(() => {
 			setStatusMessage("");
 		}, 4000);
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [statusMessage]);
 
 	async function saveData(transactionData: transactionData) {
@@ -70,7 +74,7 @@ export default function AddTransaction({}) {
 		setTransactionType("expense");
 	}
 
-	const handleClick = () => {
+	const handleClick = (): void => {
 		const transactionData: transactionData = {
 			id: Date.now(),
 			type: transactionType,
