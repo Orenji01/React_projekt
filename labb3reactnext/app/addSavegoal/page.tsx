@@ -4,13 +4,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import styles from "./page.module.css";
 
 type Inputs = {
-  namn: string;
-  summa: number;
-  månadsbetalning: number;
-  ränta: number;
+  name: string;
+  amount: number;
+  perMonth: number;
+  interest: number;
   inflation: number;
-  målDatum: Date;
-  startDatum: Date;
+  targetDate: Date;
+  startDate: Date;
 };
 
 export default function Savegoal() {
@@ -19,9 +19,28 @@ export default function Savegoal() {
     handleSubmit,
     watch,
     formState: { errors },
+    reset,
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit = async (data: Inputs) => {
+    const response = await fetch("/api/public/savegoal", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to submit form");
+    }
+
+    console.log("Saved:", result);
+
+    reset();
+  };
 
   return (
     <div id={styles.container}>
@@ -33,7 +52,7 @@ export default function Savegoal() {
             className={styles.input}
             type="text"
             placeholder="namn"
-            {...register("namn", { required: true })}
+            {...register("name", { required: true })}
           />
         </div>
         <div className={styles.formSection}>
@@ -42,7 +61,7 @@ export default function Savegoal() {
             className={styles.input}
             type="number"
             placeholder="summa"
-            {...register("summa", { required: true })}
+            {...register("amount", { required: true })}
           />
         </div>
         <div className={styles.formSection}>
@@ -51,7 +70,7 @@ export default function Savegoal() {
             className={styles.input}
             type="number"
             placeholder="månadsbetalning"
-            {...register("månadsbetalning", { required: true })}
+            {...register("perMonth", { required: true })}
           />
         </div>
         <div className={styles.formSection}>
@@ -61,7 +80,7 @@ export default function Savegoal() {
             type="number"
             placeholder="ränta"
             step="0.01"
-            {...register("ränta", { required: true })}
+            {...register("interest", { required: true })}
           />
         </div>
         <div className={styles.formSection}>
@@ -80,7 +99,7 @@ export default function Savegoal() {
             className={styles.input}
             type="date"
             placeholder="start-datum"
-            {...register("startDatum", { required: true })}
+            {...register("startDate", { required: true })}
           />
         </div>
         <div className={styles.formSection}>
@@ -89,7 +108,7 @@ export default function Savegoal() {
             className={styles.input}
             type="date"
             placeholder="mål-datum"
-            {...register("målDatum", { required: true })}
+            {...register("targetDate", { required: true })}
           />
         </div>
         <input id={styles.button} type="submit" value="Lägg till" />
