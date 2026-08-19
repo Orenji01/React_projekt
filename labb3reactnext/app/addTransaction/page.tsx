@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import "./page.css";
+import styles from "./page.module.css";
 
 interface responseData {
 	ok: boolean;
@@ -87,12 +87,13 @@ export default function AddTransaction({}) {
 	};
 
 	return (
-		<div className="container">
+		<div className={styles.transactionContainer}>
 			<h1>Lägg till Utgift/Inkomst</h1>
-			<div className="inputBox">
-				<label title="Transaktions namn">
+			<div className={styles.inputBox}>
+				<label className={styles.inputLabel} title="Transaktions namn">
 					Namn
 					<input
+						className={styles.input}
 						onChange={(e) => {
 							setName(e.target.value);
 						}}
@@ -102,10 +103,11 @@ export default function AddTransaction({}) {
 					{name.length} / 15
 				</label>
 			</div>
-			<div className="inputBox">
-				<label title="Transaktions summa">
+			<div className={styles.inputBox}>
+				<label className={styles.inputLabel} title="Transaktions summa">
 					Summa
 					<input
+						className={styles.input}
 						value={amount}
 						onChange={(e) => {
 							const value = e.target.value;
@@ -117,10 +119,11 @@ export default function AddTransaction({}) {
 					{currency}
 				</label>
 			</div>
-			<div className="inputBox">
-				<label title="Transaktions Datum">
+			<div className={styles.inputBox}>
+				<label className={styles.inputLabel} title="Transaktions Datum">
 					Datum
 					<input
+						className={styles.input}
 						type="date"
 						value={date}
 						onChange={(e) => {
@@ -129,11 +132,15 @@ export default function AddTransaction({}) {
 					/>
 				</label>
 			</div>
-			<div className="inputBox">
+			<div className={styles.inputBox}>
 				<div>
-					<label className="radioBox" title="Transaktions typ">
+					<label
+						className={`${styles.radioBox}${styles.inputLabel}`}
+						title="Transaktions typ"
+					>
 						Utgift
 						<input
+							className={styles.input}
 							title="Utgift"
 							type="radio"
 							name="transactionType"
@@ -146,6 +153,7 @@ export default function AddTransaction({}) {
 						/>{" "}
 						Inkomst
 						<input
+							className={styles.input}
 							title="Inkomst"
 							type="radio"
 							name="transactionType"
@@ -159,10 +167,11 @@ export default function AddTransaction({}) {
 					</label>
 				</div>
 			</div>
-			<div className="inputBox">
-				<label>
+			<div className={styles.inputBox}>
+				<label className={styles.inputLabel}>
 					Återkommande
 					<input
+						className={styles.input}
 						type="checkbox"
 						onChange={() => {
 							setrecurring(!recurring);
@@ -170,7 +179,11 @@ export default function AddTransaction({}) {
 					/>
 				</label>
 			</div>
-			<button disabled={!name || !amount || !date} onClick={handleClick}>
+			<button
+				className={styles.submitButton}
+				disabled={!name || !amount || !date}
+				onClick={handleClick}
+			>
 				Test
 			</button>
 			<p>{statusMessage}</p>

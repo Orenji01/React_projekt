@@ -12,6 +12,41 @@ export interface sourceItem {
 	date?: string;
 }
 
+export interface savingsResponse {
+	ok: boolean;
+	message: string;
+	data: savingsItem[] | [];
+}
+
+export interface savingsItem {
+	_id: string;
+	name: string;
+	amount: number;
+	perMonth: number;
+	interest: number;
+	inflation: number;
+	targetDate: string;
+	startDate: string;
+}
+
+export interface loansResponse {
+	ok: boolean;
+	message: string;
+	data: loanItem[] | [];
+}
+
+export interface loanItem {
+	id: number;
+	name: string;
+	amount: string;
+	repayAmount: string;
+	interest: string | 0;
+	useInflation: boolean;
+	useDeductions: boolean;
+	targetDate: string;
+	startDate: string;
+}
+
 // Cash flow types:
 export interface cashflowResponse {
 	ok: boolean;

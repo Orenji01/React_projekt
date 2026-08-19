@@ -1,8 +1,8 @@
-label {
+.label {
 	margin: 4px 0;
 }
 
-input {
+.input {
 	border: 1px solid black;
 	border-radius: 3px;
 }
@@ -14,12 +14,12 @@ input {
 	margin: 0 auto;
 }
 
-button {
+.submitButton {
 	border: 1px solid black;
 	border-radius: 3px;
 	cursor: pointer;
 }
-button:disabled {
+.submitButton:disabled {
 	border: 1px solid rgb(136, 136, 136);
 	color: rgb(136, 136, 136);
 	border-radius: 3px;

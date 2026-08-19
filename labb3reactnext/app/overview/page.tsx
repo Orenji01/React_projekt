@@ -1,4 +1,4 @@
-import "./page.css";
+import "./page.module.css";
 import Overviewbox from "../components/overviewbox";
 
 const cats = ["savings", "loans", "income", "expense"];
