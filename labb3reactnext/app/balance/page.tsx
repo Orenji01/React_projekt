@@ -1,36 +1,45 @@
 "use client";
 import { useEffect, useState } from "react";
-import { sourceItem, sourceResponse } from "../types/overViewTypes";
+import {
+	sourceItem,
+	sourceResponse,
+	cashflowResponse,
+	cashFlowItem,
+	savingsResponse,
+	savingsItem,
+	loansResponse,
+	loanItem,
+} from "../types/overViewTypes";
 import styles from "./page.module.css";
 import { Divide } from "lucide-react";
 
 export default function BalancePage() {
-	const [income, setIncome] = useState<sourceItem[]>([]);
-	const [expense, setExpenses] = useState<sourceItem[]>([]);
-	const [loans, setLoans] = useState<sourceItem[]>([]);
-	const [savings, setSavings] = useState<sourceItem[]>([]);
+	const [income, setIncome] = useState<cashFlowItem[]>([]);
+	const [expense, setExpenses] = useState<cashFlowItem[]>([]);
+	const [loans, setLoans] = useState<loanItem[]>([]);
+	const [savings, setSavings] = useState<savingsItem[]>([]);
 
 	useEffect(() => {
 		async function getIncome() {
 			const response = await fetch("/api/public/overview-data/get-income");
-			const res: sourceResponse = await response.json();
+			const res: cashflowResponse = await response.json();
 			setIncome(res.data ?? []);
 		}
 		async function getExpenses() {
 			const response = await fetch("/api/public/overview-data/get-expense");
-			const res: sourceResponse = await response.json();
+			const res: cashflowResponse = await response.json();
 			setExpenses(res.data ?? []);
 		}
 
 		async function getLoans() {
 			const response = await fetch("/api/public/overview-data/get-loans");
-			const res: sourceResponse = await response.json();
+			const res: loansResponse = await response.json();
 			setLoans(res.data ?? []);
 		}
 
 		async function getSavings() {
 			const response = await fetch("/api/public/overview-data/get-savings");
-			const res: sourceResponse = await response.json();
+			const res: savingsResponse = await response.json();
 			setSavings(res.data ?? []);
 		}
 		getIncome();
@@ -77,7 +86,7 @@ export default function BalancePage() {
 					<ul className={styles.balanceList}>
 						{loans.length ? (
 							loans.map((item) => (
-								<li key={item._id} className={styles.balanceItem}>
+								<li key={item.id} className={styles.balanceItem}>
 									<span>{item.name}</span>
 									<span>{item.amount} kr</span>
 								</li>
