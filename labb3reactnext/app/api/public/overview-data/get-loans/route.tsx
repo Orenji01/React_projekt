@@ -10,25 +10,63 @@ export interface overViewObject {
 }
 
 export async function GET() {
-	const mongo = await getDB();
+	try {
+		const mongo = await getDB();
 
-	const data = await mongo.collection<overViewObject>("loans").find().toArray();
+		if (mongo === 0) {
+			return NextResponse.json(
+				{
+					ok: true,
+					data: sampleData,
+					message: "No db connection, using sample data",
+				},
+				{ status: 200 },
+			);
+		}
 
-	if (data.length === 0) {
+		const data = await mongo
+			.collection<overViewObject>("loans")
+			.find()
+			.toArray();
+
+		if (data.length === 0) {
+			return NextResponse.json(
+				{
+					ok: true,
+					data: sampleData,
+					message: "No data found, using sample data",
+				},
+				{ status: 200 },
+			);
+		}
+
 		return NextResponse.json(
-			{ ok: false, data: [], message: "No data found" },
-			{ status: 404 },
+			{ ok: true, data: data, message: "This message from loans route" },
+			{ status: 200 },
+		);
+	} catch (e) {
+		console.log(e);
+		return NextResponse.json(
+			{ ok: true, data: [], message: "Ett okänt fel inträffade" },
+			{ status: 500 },
 		);
 	}
-
-	// const data = [
-	// 	{ id: 1, name: "Inkomst1", amount: 33000 },
-	// 	{ id: 2, name: "Inkomst2", amount: 4032 },
-	// 	{ id: 3, name: "Inkomst3", amount: 501 },
-	// ];
-
-	return NextResponse.json(
-		{ ok: true, data: data, message: "This message from loans route" },
-		{ status: 200 },
-	);
 }
+
+const sampleData = [
+	{
+		_id: "6a1de9748b7c3b4ea370ce3c",
+		name: "Student Loan",
+		amount: 120000,
+	},
+	{
+		_id: "6a1de9748b7c3b4ea370ce3d",
+		name: "Car Loan",
+		amount: 85000,
+	},
+	{
+		_id: "6a1de9748b7c3b4ea370ce3e",
+		name: "Personal Loan",
+		amount: 15000,
+	},
+];

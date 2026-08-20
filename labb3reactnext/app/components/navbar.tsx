@@ -21,6 +21,9 @@ const Navbar = () => {
           <li>
             <Link href="editSavegoal">Redigera sparmål</Link>
           </li>
+          <li>
+            <Link href="addLoan">Nytt Lån</Link>
+          </li>
         </ul>
       </nav>
     </>

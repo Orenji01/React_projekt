@@ -1,0 +1,27 @@
+label {
+	margin: 4px 0;
+}
+
+input {
+	border: 1px solid black;
+	border-radius: 3px;
+}
+
+.inputContainer {
+	display: flex;
+	flex-direction: column;
+	width: 20rem;
+	margin: 0 auto;
+}
+
+button {
+	border: 1px solid black;
+	border-radius: 3px;
+	cursor: pointer;
+}
+button:disabled {
+	border: 1px solid rgb(136, 136, 136);
+	color: rgb(136, 136, 136);
+	border-radius: 3px;
+	cursor: pointer;
+}

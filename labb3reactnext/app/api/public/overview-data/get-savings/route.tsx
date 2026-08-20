@@ -10,28 +10,59 @@ export interface overViewObject {
 }
 
 export async function GET() {
-	const mongo = await getDB();
+	try {
+		const mongo = await getDB();
 
-	const data = await mongo
-		.collection<overViewObject>("savings")
-		.find()
-		.toArray();
+		if (mongo === 0) {
+			return NextResponse.json(
+				{
+					ok: true,
+					data: sampleData,
+					message: "No db! Using example data",
+				},
+				{ status: 200 },
+			);
+		}
 
-	if (data.length === 0) {
+		const data = await mongo
+			.collection<overViewObject>("savings")
+			.find()
+			.toArray();
+
+		if (data!) {
+			return NextResponse.json(
+				{ ok: true, data: sampleData, message: "No data, using example data" },
+				{ status: 200 },
+			);
+		}
+
 		return NextResponse.json(
-			{ ok: false, data: [], message: "No data found" },
-			{ status: 404 },
+			{ ok: true, data: data, message: "This message from savings route" },
+			{ status: 200 },
+		);
+	} catch (e) {
+		console.log(e);
+		return NextResponse.json(
+			{ ok: false, data: [], message: "Okänt fel inträffade" },
+			{ status: 500 },
 		);
 	}
-
-	// const data = [
-	// 	{ id: 1, name: "Inkomst1", amount: 33000 },
-	// 	{ id: 2, name: "Inkomst2", amount: 4032 },
-	// 	{ id: 3, name: "Inkomst3", amount: 501 },
-	// ];
-
-	return NextResponse.json(
-		{ ok: true, data: data, message: "This message from savings route" },
-		{ status: 200 },
-	);
 }
+
+const sampleData = [
+	{
+		_id: "6a1de9778b7c3b4ea370ce40",
+		name: "Emergency Fund",
+		amount: 25000,
+	},
+	{
+		_id: "6a1de9778b7c3b4ea370ce41",
+		name: "Vacation Fund",
+		amount: 10000,
+	},
+	{
+		_id: "6a1de9778b7c3b4ea370ce42",
+		name: "Retirement Savings",
+		amount: 75000,
+	},
+];
