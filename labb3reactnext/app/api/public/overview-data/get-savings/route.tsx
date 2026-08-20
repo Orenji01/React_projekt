@@ -3,10 +3,15 @@ import { getDB } from "@/lib/mongodbnext";
 // import { getDB } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export interface overViewObject {
+export interface savingsObject {
 	_id: ObjectId;
+	id: number;
 	name: string;
 	amount: number;
+	perMonth: number;
+	inflation: number;
+	targetDate: string;
+	startDate: string;
 }
 
 export async function GET() {
@@ -25,7 +30,7 @@ export async function GET() {
 		}
 
 		const data = await mongo
-			.collection<overViewObject>("savings")
+			.collection<savingsObject>("savings")
 			.find()
 			.toArray();
 
@@ -51,18 +56,25 @@ export async function GET() {
 
 const sampleData = [
 	{
-		_id: "6a1de9778b7c3b4ea370ce40",
+		_id: "6a1de9778b7c3125a370ce40",
+		id: 1,
 		name: "Emergency Fund",
 		amount: 25000,
+		perMonth: 250,
+		interest: 3,
+		inflation: 4,
+		targetDate: "2026-10-25",
+		startDate: "2026-08-10",
 	},
 	{
-		_id: "6a1de9778b7c3b4ea370ce41",
-		name: "Vacation Fund",
-		amount: 10000,
-	},
-	{
-		_id: "6a1de9778b7c3b4ea370ce42",
-		name: "Retirement Savings",
-		amount: 75000,
+		_id: "6a1de9778b7c3b4ea370ce40",
+		id: 2,
+		name: "Waterdrum",
+		amount: 25000,
+		perMonth: 432,
+		interest: 4,
+		inflation: 3,
+		targetDate: "2026-11-28",
+		startDate: "2026-08-10",
 	},
 ];

@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
-// import { getDB } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 
-export interface overViewObject {
-	_id: ObjectId;
-	name: string;
-	amount: number;
-}
+import { loanItem } from "@/app/types/overViewTypes";
 
 export async function GET() {
 	try {
@@ -24,10 +18,7 @@ export async function GET() {
 			);
 		}
 
-		const data = await mongo
-			.collection<overViewObject>("loans")
-			.find()
-			.toArray();
+		const data = await mongo.collection<loanItem>("loans").find().toArray();
 
 		if (data.length === 0) {
 			return NextResponse.json(
@@ -55,18 +46,27 @@ export async function GET() {
 
 const sampleData = [
 	{
-		_id: "6a1de9748b7c3b4ea370ce3c",
-		name: "Student Loan",
-		amount: 120000,
+		_id: "6a1de9778b7c3125a370ce40",
+		id: 1,
+		name: "Happy Monday",
+		amount: 25000,
+		perMonth: 250,
+		interest: 3,
+		inflation: 4,
+		deductions: false,
+		targetDate: "2026-10-25",
+		startDate: "2026-08-10",
 	},
 	{
-		_id: "6a1de9748b7c3b4ea370ce3d",
-		name: "Car Loan",
-		amount: 85000,
-	},
-	{
-		_id: "6a1de9748b7c3b4ea370ce3e",
-		name: "Personal Loan",
-		amount: 15000,
+		_id: "6a1de9778b7c3125a370ce40",
+		id: 2,
+		name: "Crude oil",
+		amount: 4000,
+		perMonth: 200,
+		interest: 2,
+		inflation: 4,
+		deductions: false,
+		targetDate: "2027-07-25",
+		startDate: "2026-08-10",
 	},
 ];

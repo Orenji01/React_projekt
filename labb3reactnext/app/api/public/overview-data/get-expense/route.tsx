@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
 // import { getDB } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 
-export interface overViewObject {
-	_id: ObjectId;
-	name: string;
-	amount: number;
-}
+import { cashFlowItem } from "@/app/types/overViewTypes";
 
 export async function GET() {
 	try {
@@ -25,7 +20,7 @@ export async function GET() {
 		}
 
 		const data = await mongo
-			.collection<overViewObject>("cashflow")
+			.collection<cashFlowItem>("cashflow")
 			.find({ type: "expense" })
 			.toArray();
 
@@ -56,6 +51,7 @@ export async function GET() {
 const sampleData = [
 	{
 		_id: "6a23d580550b2d22d9f3c0ee",
+		id: 1,
 		type: "expense",
 		category: "housing",
 		repeating: true,
@@ -66,6 +62,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0ef",
+		id: 2,
 		type: "expense",
 		category: "utilities",
 		repeating: true,
@@ -76,6 +73,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0f0",
+		id: 3,
 		type: "expense",
 		category: "utilities",
 		repeating: true,
@@ -86,6 +84,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0f1",
+		id: 4,
 		type: "expense",
 		category: "food",
 		repeating: false,
@@ -96,6 +95,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0f2",
+		id: 5,
 		type: "expense",
 		category: "shopping",
 		repeating: false,
@@ -106,6 +106,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0f3",
+		id: 6,
 		type: "expense",
 		category: "transport",
 		repeating: true,
@@ -116,6 +117,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c94",
+		id: 7,
 		type: "expense",
 		category: "health",
 		repeating: false,
@@ -126,6 +128,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c95",
+		id: 8,
 		type: "expense",
 		category: "entertainment",
 		repeating: true,
@@ -136,6 +139,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c96",
+		id: 9,
 		type: "expense",
 		category: "insurance",
 		repeating: true,
@@ -146,6 +150,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c97",
+		id: 10,
 		type: "expense",
 		category: "travel",
 		repeating: false,

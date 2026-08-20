@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import { useState, useEffect } from "react";
-import "./page.css";
+import styles from "./page.module.css";
 
 interface loanInterface {
 	id: number;
@@ -73,8 +72,6 @@ export default function AddLoanPage() {
 		calcMonthlyAmount();
 	}, [amount, startDate, targetDate]);
 
-	useEffect(() => {}, []);
-
 	async function saveData() {
 		const loanData: loanInterface = {
 			id: Date.now(),
@@ -118,19 +115,21 @@ export default function AddLoanPage() {
 
 	return (
 		<div>
-			<div className="inputContainer">
-				<label>
+			<div className={styles.inputContainer}>
+				<label className={styles.label}>
 					Namn
 					<input
+						className={styles.input}
 						value={name}
 						onChange={(e) => {
 							setName(e.target.value);
 						}}
 					/>
 				</label>
-				<label>
+				<label className={styles.label}>
 					Summa
 					<input
+						className={styles.input}
 						value={amount}
 						onChange={(e) => {
 							const value = e.target.value;
@@ -141,9 +140,10 @@ export default function AddLoanPage() {
 					/>{" "}
 					{currency}
 				</label>
-				<label>
+				<label className={styles.label}>
 					Amortering
 					<input
+						className={styles.input}
 						value={repayAmount}
 						onChange={(e) => {
 							const value = e.target.value;
@@ -161,9 +161,10 @@ export default function AddLoanPage() {
 					{currency}
 				</label>
 
-				<label>
+				<label className={styles.label}>
 					Ränta
 					<input
+						className={styles.input}
 						value={interest}
 						onChange={(e) => {
 							const value = e.target.value;
@@ -174,9 +175,10 @@ export default function AddLoanPage() {
 					/>{" "}
 					%
 				</label>
-				<label>
+				<label className={styles.label}>
 					Inkludera inflation
 					<input
+						className={styles.input}
 						onChange={() => {
 							setUseInflation(!useInflation);
 						}}
@@ -184,9 +186,10 @@ export default function AddLoanPage() {
 						checked={useInflation}
 					></input>
 				</label>
-				<label>
+				<label className={styles.label}>
 					Inkludera skatteavdrag
 					<input
+						className={styles.input}
 						onChange={() => {
 							setUseDeductions((prev) => {
 								return !prev;
@@ -197,9 +200,10 @@ export default function AddLoanPage() {
 					></input>
 				</label>
 
-				<label>
+				<label className={styles.label}>
 					Startdatum
 					<input
+						className={styles.input}
 						value={startDate}
 						onChange={(e) => {
 							setStartDate(e.target.value);
@@ -207,9 +211,10 @@ export default function AddLoanPage() {
 						type="date"
 					></input>
 				</label>
-				<label>
+				<label className={styles.label}>
 					Måldatum
 					<input
+						className={styles.input}
 						value={targetDate}
 						onChange={(e) => {
 							if (startDate > e.target.value) {
@@ -225,6 +230,7 @@ export default function AddLoanPage() {
 					></input>
 				</label>
 				<button
+					className={styles.submitButton}
 					disabled={!name || !amount || !repayAmount || !interest || !startDate}
 					onClick={saveData}
 				>
