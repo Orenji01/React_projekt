@@ -1,13 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
-	sourceItem,
-	sourceResponse,
-	cashflowResponse,
+	dataResponse,
 	cashFlowItem,
-	savingsResponse,
 	savingsItem,
-	loansResponse,
 	loanItem,
 } from "../types/overViewTypes";
 import styles from "./page.module.css";
@@ -22,24 +18,24 @@ export default function BalancePage() {
 	useEffect(() => {
 		async function getIncome() {
 			const response = await fetch("/api/public/overview-data/get-income");
-			const res: cashflowResponse = await response.json();
+			const res: dataResponse<cashFlowItem[]> = await response.json();
 			setIncome(res.data ?? []);
 		}
 		async function getExpenses() {
 			const response = await fetch("/api/public/overview-data/get-expense");
-			const res: cashflowResponse = await response.json();
+			const res: dataResponse<cashFlowItem[]> = await response.json();
 			setExpenses(res.data ?? []);
 		}
 
 		async function getLoans() {
 			const response = await fetch("/api/public/overview-data/get-loans");
-			const res: loansResponse = await response.json();
+			const res: dataResponse<loanItem[]> = await response.json();
 			setLoans(res.data ?? []);
 		}
 
 		async function getSavings() {
 			const response = await fetch("/api/public/overview-data/get-savings");
-			const res: savingsResponse = await response.json();
+			const res: dataResponse<savingsItem[]> = await response.json();
 			setSavings(res.data ?? []);
 		}
 		getIncome();
@@ -47,6 +43,10 @@ export default function BalancePage() {
 		getLoans();
 		getSavings();
 	}, []);
+
+	useEffect(() => {
+		console.log(savings);
+	}, [savings]);
 
 	return (
 		<>
@@ -58,7 +58,7 @@ export default function BalancePage() {
 					<ul className={styles.balanceList}>
 						{income.length ? (
 							income.map((item) => (
-								<li key={item._id} className={styles.balanceItem}>
+								<li key={item.id} className={styles.balanceItem}>
 									<span>{item.name}</span>
 									<span>{item.amount} kr</span>
 								</li>
@@ -72,7 +72,7 @@ export default function BalancePage() {
 					<ul className={styles.balanceList}>
 						{expense.length ? (
 							expense.map((item) => (
-								<li key={item._id} className={styles.balanceItem}>
+								<li key={item.id} className={styles.balanceItem}>
 									<span>{item.name}</span>
 									<span>{item.amount} kr</span>
 								</li>
@@ -100,7 +100,7 @@ export default function BalancePage() {
 					<ul className={styles.balanceList}>
 						{savings.length ? (
 							savings.map((item) => (
-								<li key={item._id} className={styles.balanceItem}>
+								<li key={item.id} className={styles.balanceItem}>
 									<span>{item.name}</span>
 									<span>{item.amount} kr</span>
 								</li>

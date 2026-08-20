@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
 
-import { overViewObject } from "@/app/types/overViewTypes";
+import { cashFlowItem } from "@/app/types/overViewTypes";
 
 export async function GET() {
 	try {
@@ -19,7 +19,7 @@ export async function GET() {
 		}
 
 		const data = await mongo
-			.collection<overViewObject>("cashflow")
+			.collection<cashFlowItem>("cashflow")
 			.find({ type: "income" })
 			.toArray();
 
@@ -50,6 +50,7 @@ export async function GET() {
 const sampleData = [
 	{
 		_id: "6a23d580550b2d22d9f3c0eb",
+		id: 1,
 		type: "income",
 		category: "salary",
 		repeating: true,
@@ -60,6 +61,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0ec",
+		id: 2,
 		type: "income",
 		category: "benefits",
 		repeating: true,
@@ -70,6 +72,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a23d580550b2d22d9f3c0ed",
+		id: 3,
 		type: "income",
 		category: "investment",
 		repeating: false,
@@ -80,6 +83,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c92",
+		id: 4,
 		type: "income",
 		category: "freelance",
 		repeating: false,
@@ -90,6 +94,7 @@ const sampleData = [
 	},
 	{
 		_id: "6a25f10f3cd0ed6c35d84c93",
+		id: 5,
 		type: "income",
 		category: "gift",
 		repeating: false,

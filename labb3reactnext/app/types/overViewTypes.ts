@@ -1,10 +1,5 @@
 import { ObjectId } from "mongodb";
 
-export interface sourceResponse {
-	ok: boolean;
-	message: string;
-	data: sourceItem[] | [];
-}
 export interface sourceItem {
 	_id: string;
 	name: string;
@@ -12,14 +7,18 @@ export interface sourceItem {
 	date?: string;
 }
 
-export interface savingsResponse {
-	ok: boolean;
-	message: string;
-	data: savingsItem[] | [];
+export interface withId {
+	_id: ObjectId;
 }
 
+export interface dataResponse<items> {
+	ok: boolean;
+	message: string;
+	data?: items;
+}
 export interface savingsItem {
-	_id: string;
+	_id: ObjectId;
+	id: number;
 	name: string;
 	amount: number;
 	perMonth: number;
@@ -28,34 +27,21 @@ export interface savingsItem {
 	targetDate: string;
 	startDate: string;
 }
-
-export interface loansResponse {
-	ok: boolean;
-	message: string;
-	data: loanItem[] | [];
-}
-
 export interface loanItem {
+	_id: ObjectId;
 	id: number;
 	name: string;
 	amount: string;
-	repayAmount: string;
+	perMonth: string;
 	interest: string | 0;
-	useInflation: boolean;
-	useDeductions: boolean;
+	inflation: number;
+	deductions: boolean;
 	targetDate: string;
 	startDate: string;
 }
-
-// Cash flow types:
-export interface cashflowResponse {
-	ok: boolean;
-	message: string;
-	data: cashFlowItem[] | [];
-}
-
 export interface cashFlowItem {
-	_id: string;
+	_id: ObjectId;
+	id: number;
 	type: string;
 	category: string;
 	repeating: boolean;
@@ -64,7 +50,6 @@ export interface cashFlowItem {
 	date: string;
 	created: string;
 }
-
 export interface overViewObject {
 	_id: ObjectId;
 	name: string;
