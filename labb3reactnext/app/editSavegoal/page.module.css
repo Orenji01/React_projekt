@@ -16,3 +16,10 @@
 .link {
   width: 100%;
 }
+
+@media (min-width: 769px) {
+  #saveGoalList {
+    width: 740px;
+    align-self: center;
+  }
+}

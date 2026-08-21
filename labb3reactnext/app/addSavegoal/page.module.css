@@ -2,22 +2,25 @@
   background-color: gray;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 25px;
   width: 90%;
   height: 90%;
 }
 
 .input {
   background-color: white;
+  border-radius: 4px;
 }
 
 .formSection {
   display: flex;
   justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #title {
-  font-size: 24px;
+  font-size: 2.81em;
   text-align: center;
   padding-bottom: 25px;
 }
@@ -29,6 +32,7 @@
   align-self: center;
   margin-bottom: 5px;
   margin-top: 25px;
+  border-radius: 4px;
 }
 
 #container {
@@ -36,4 +40,19 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.errorMessage {
+  align-self: flex-end;
+  padding-right: 10px;
+}
+
+@media (min-width: 769px) {
+  #form {
+    width: 740px;
+    gap: 40px;
+  }
+  #title {
+    font-size: 3.81em;
+  }
 }
