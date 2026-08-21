@@ -36,3 +36,63 @@ export async function GET() {
 		}
 	}
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const {
+      name,
+      amount,
+      perMonth,
+      interest,
+      inflation,
+      targetDate,
+      startDate,
+    } = body;
+
+    if (
+      !name ||
+      !amount ||
+      !perMonth ||
+      !interest ||
+      !inflation ||
+      !targetDate ||
+      !startDate
+    ) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 },
+      );
+    }
+
+    const getDatabase = await getDB();
+
+    /* const db = await getDatabase.db("budget"); */
+
+    const result = await getDatabase.collection("savegoal").insertOne({
+      name,
+      amount,
+      perMonth,
+      interest,
+      inflation,
+      targetDate,
+      startDate,
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        id: result.insertedId,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 },
+    );
+  }
+}
