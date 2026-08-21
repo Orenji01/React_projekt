@@ -1,19 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
 import { ObjectId } from "mongodb";
-
-interface loanInterface {
-	_id: ObjectId;
-	id: number;
-	name: string;
-	amount: string;
-	repayAmount: string;
-	interest: string;
-	useInflation: boolean;
-	useDeductions: boolean;
-	targetDate: string;
-	startDate: string;
-}
+import { loanItem } from "@/app/types/someTypes";
 
 export async function POST(req: NextRequest) {
 	const mongo = await getDB();
@@ -27,9 +15,9 @@ export async function POST(req: NextRequest) {
 			{ status: 500 },
 		);
 	}
-	const body: loanInterface = await req.json();
+	const body: loanItem = await req.json();
 
-	await mongo.collection<loanInterface>("loans").insertOne(body);
+	await mongo.collection<loanItem>("loans").insertOne(body);
 
 	return NextResponse.json(
 		{ ok: true, message: "det gick nog bra... kanske" },

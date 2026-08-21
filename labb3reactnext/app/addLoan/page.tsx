@@ -1,86 +1,117 @@
 "use client";
-
+import { dataResponse, loanItem } from "../types/someTypes";
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
-interface loanInterface {
-	id: number;
-	name: string;
-	amount: string;
-	repayAmount: string;
-	interest: string | 0;
-	useInflation: boolean;
-	useDeductions: boolean;
-	targetDate: string;
-	startDate: string;
-}
-
-interface response {
-	ok: boolean;
-	message: string;
-}
-
 export default function AddLoanPage() {
 	const [name, setName] = useState<string>("");
-	const [amount, setAmount] = useState<string>("");
-	const [repayAmount, setRepayAmount] = useState<string>("");
-	const [interest, setInterest] = useState<string>("");
-	const [useInflation, setUseInflation] = useState<boolean>(false);
-	const [useDeductions, setUseDeductions] = useState<boolean>(false);
+	const [amount, setAmount] = useState<number | null>(null);
+	const [perMonth, setPerMonth] = useState<number | null>(null);
+	const [interest, setInterest] = useState<number | null>(null);
+	const [inflation, setInflation] = useState<boolean>(false);
+	const [deductions, setDeductions] = useState<boolean>(false);
 	const [targetDate, setTargetDate] = useState<string>("");
 	const [startDate, setStartDate] = useState<string>(
 		new Date().toISOString().split("T")[0],
 	);
+	const [months, setMonths] = useState<number>(12);
 
 	const [statusMessage, setStatusMessage] = useState<string>("");
 	const [currency, setCurrency] = useState<string>("kr");
+	const [interestCost, setInterestCost] = useState<number>(0);
 	// Hade en ide med currency som jag inte implementerade
 
 	function clearData() {
 		setName("");
-		setAmount("");
-		setRepayAmount("");
-		setInterest("");
-		setUseInflation(false);
-		setUseDeductions(false);
+		setAmount(null);
+		setPerMonth(null);
+		setInterest(null);
+		setInflation(false);
+		setDeductions(false);
 		setTargetDate("");
 		setStartDate("");
 	}
 
+	const firstMonthInterest =
+		amount !== null && interest !== null ? amount * (interest / 100 / 12) : 0;
+
+	const firstMonthPayment =
+		amount !== null ? amount / months + firstMonthInterest : 0;
+
+	// useEffect(() => {
+	// 	function calcMonthlyAmount() {
+	// 		if (!targetDate || !startDate || !amount) {
+	// 			return;
+	// 		}
+	// 		const target = new Date(targetDate);
+	// 		const start = new Date(startDate);
+
+	// 		let monthsDiff: number =
+	// 			1 +
+	// 			(target.getFullYear() - start.getFullYear()) * 12 +
+	// 			(target.getMonth() - start.getMonth());
+
+	// 		if (target.getDate() < start.getDate()) {
+	// 			monthsDiff--;
+	// 		}
+	// 		if (monthsDiff > 0) {
+	// 			setPerMonth(Math.floor(Number(amount) / monthsDiff).toString());
+	// 		} else {
+	// 			setPerMonth(amount);
+	// 		}
+	// 	}
+	// 	calcMonthlyAmount();
+	// }, [amount, startDate, targetDate]);
+
 	useEffect(() => {
-		function calcMonthlyAmount() {
-			if (!targetDate || !startDate || !amount) {
+		if (!amount || !months) return;
+		function calcMonths() {
+			setPerMonth((): number => {
+				const value = Number(amount) / months;
+
+				return Number(Math.floor(value).toString());
+			});
+		}
+		calcMonths();
+	}, [amount, months]);
+
+	useEffect(() => {
+		function calcAccInterest() {
+			if (amount === null || !months || interest === null) {
 				return;
 			}
-			const target = new Date(targetDate);
-			const start = new Date(startDate);
 
-			let monthsDiff: number =
-				1 +
-				(target.getFullYear() - start.getFullYear()) * 12 +
-				(target.getMonth() - start.getMonth());
+			let remaining = amount;
+			let accumulated = 0;
 
-			if (target.getDate() < start.getDate()) {
-				monthsDiff--;
+			const monthlyAmortization = amount / months;
+			// Skulle kunna använda "perMonth" här men... näää
+			const monthlyInterest = interest / 100 / 12;
+
+			for (let month = 1; month <= months; month++) {
+				const monthsInterest = remaining * monthlyInterest;
+
+				accumulated += monthsInterest;
+				remaining -= monthlyAmortization;
 			}
-			if (monthsDiff > 0) {
-				setRepayAmount(Math.floor(Number(amount) / monthsDiff).toString());
-			} else {
-				setRepayAmount(amount);
-			}
+
+			setInterestCost(Math.floor(accumulated));
 		}
-		calcMonthlyAmount();
-	}, [amount, startDate, targetDate]);
+		calcAccInterest();
+	}, [amount, months, interest]);
 
 	async function saveData() {
-		const loanData: loanInterface = {
+		if (name === "") {
+			setName("Ett lån");
+		}
+		const loanData: loanItem = {
 			id: Date.now(),
 			name,
-			amount,
-			repayAmount,
-			interest,
-			useInflation,
-			useDeductions,
+			amount: Number(amount),
+			perMonth: Number(amount),
+			interest: Number(amount),
+			inflation,
+			deductions,
 			targetDate,
 			startDate,
 		};
@@ -90,7 +121,7 @@ export default function AddLoanPage() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(loanData),
 		});
-		const response: response = await data.json();
+		const response: dataResponse<loanItem> = await data.json();
 
 		if (response.ok!) {
 			setStatusMessage(response.message);
@@ -115,7 +146,7 @@ export default function AddLoanPage() {
 
 	return (
 		<div>
-			<div className={styles.inputContainer}>
+			<form onSubmit={saveData} className={styles.inputContainer}>
 				<label className={styles.label}>
 					Namn
 					<input
@@ -127,91 +158,57 @@ export default function AddLoanPage() {
 					/>
 				</label>
 				<label className={styles.label}>
-					Summa
+					Summa*
 					<input
 						className={styles.input}
-						value={amount}
+						value={amount ?? ""}
+						placeholder={currency}
 						onChange={(e) => {
 							const value = e.target.value;
 							if (/^\d*(\.\d{0,2})?$/.test(value) || 0) {
-								setAmount(value);
+								setAmount(Number(value));
 							}
 						}}
 					/>{" "}
-					{currency}
 				</label>
-				<label className={styles.label}>
+				{/* <label className={styles.label}>
 					Amortering
 					<input
 						className={styles.input}
-						value={repayAmount}
+						value={perMonth}
 						onChange={(e) => {
 							const value = e.target.value;
 							if (Number(value) > Number(amount)) {
-								setRepayAmount(amount);
+								setPerMonth(amount);
 								setStatusMessage("Kan inte överskrida totalsumman");
 							} else if (
 								/^\d*(\.\d{0,2})?$/.test(value) ||
 								Number(value) < Number(amount)
 							) {
-								setRepayAmount(value);
+								setPerMonth(value);
 							}
 						}}
 					/>{" "}
 					{currency}
-				</label>
-
-				<label className={styles.label}>
-					Ränta
-					<input
-						className={styles.input}
-						value={interest}
-						onChange={(e) => {
-							const value = e.target.value;
-							if (/^\d*(\.\d{0,2})?$/.test(value) || 0) {
-								setInterest(value);
-							}
-						}}
-					/>{" "}
-					%
-				</label>
-				<label className={styles.label}>
-					Inkludera inflation
-					<input
-						className={styles.input}
-						onChange={() => {
-							setUseInflation(!useInflation);
-						}}
-						type="checkbox"
-						checked={useInflation}
-					></input>
-				</label>
-				<label className={styles.label}>
-					Inkludera skatteavdrag
-					<input
-						className={styles.input}
-						onChange={() => {
-							setUseDeductions((prev) => {
-								return !prev;
-							});
-						}}
-						type="checkbox"
-						checked={useDeductions}
-					></input>
-				</label>
-
-				<label className={styles.label}>
-					Startdatum
-					<input
-						className={styles.input}
-						value={startDate}
-						onChange={(e) => {
-							setStartDate(e.target.value);
-						}}
-						type="date"
-					></input>
-				</label>
-				<label className={styles.label}>
+				</label> */}
+				<div className={styles.loanCost}>
+					<label className={styles.slider}>
+						Avbetalningstid
+						<input
+							className={styles.input}
+							disabled={!amount}
+							value={months}
+							min="1"
+							max="60"
+							type="range"
+							onChange={(e) => {
+								setMonths(Number(e.target.value));
+							}}
+						/>
+						{months} Månader
+					</label>
+					Kostnad: {Math.floor(Number(perMonth))} per månad.{" "}
+					{/* <label className={styles.label}>
 					Måldatum
 					<input
 						className={styles.input}
@@ -228,16 +225,76 @@ export default function AddLoanPage() {
 						}}
 						type="date"
 					></input>
+				</label> */}
+					<label className={styles.interest}>
+						Ränta
+						<input
+							type="number"
+							step="0.01"
+							className={styles.interestInput}
+							value={interest ?? ""}
+							onChange={(e) => {
+								const value = e.target.value;
+								if (value === "") {
+									setInterest(null);
+									setInterestCost(0);
+									return;
+								}
+								if (/^\d*(\.\d{0,2})?$/.test(value) || 0) {
+									setInterest(Number(value));
+								}
+							}}
+						/>{" "}
+						%
+					</label>
+					<div>Total räntekostnad {interestCost}</div>
+				</div>
+				<div className={styles.checkboxes}>
+					<label className={styles.labelCheck}>
+						Inkludera inflation
+						<input
+							className={styles.checkInput}
+							onChange={() => {
+								setInflation(!inflation);
+							}}
+							type="checkbox"
+							checked={inflation}
+						></input>
+					</label>
+
+					<label className={styles.labelCheck}>
+						Inkludera skatteavdrag
+						<input
+							className={styles.inputCheck}
+							onChange={() => {
+								setDeductions((prev) => {
+									return !prev;
+								});
+							}}
+							type="checkbox"
+							checked={deductions}
+						></input>
+					</label>
+				</div>
+				<label className={styles.label}>
+					Startdatum
+					<input
+						className={styles.input}
+						value={startDate}
+						onChange={(e) => {
+							setStartDate(e.target.value);
+						}}
+						type="date"
+					></input>
 				</label>
-				<button
+				<p>* obligatoriska fält</p>
+				<input
+					type="submit"
 					className={styles.submitButton}
-					disabled={!name || !amount || !repayAmount || !interest || !startDate}
-					onClick={saveData}
-				>
-					Lägg till
-				</button>
+					disabled={!name || !amount || !perMonth || !interest || !startDate}
+				/>
 				<p>{statusMessage}</p>
-			</div>
+			</form>
 		</div>
 	);
 }

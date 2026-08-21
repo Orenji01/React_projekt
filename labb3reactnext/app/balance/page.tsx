@@ -5,7 +5,7 @@ import {
 	cashFlowItem,
 	savingsItem,
 	loanItem,
-} from "../types/overViewTypes";
+} from "../types/someTypes";
 import styles from "./page.module.css";
 import { Divide } from "lucide-react";
 

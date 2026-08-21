@@ -1,10 +1,46 @@
 .label {
-	margin: 4px 0;
+	display: flex;
+	margin: 4px auto;
+	width: 100%;
+}
+.labelCheck {
+	display: flex;
+	justify-content: space-between;
+	margin: 4px auto;
+	width: 100%;
+}
+.slider {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 0.5rem;
+}
+.interest {
+	display: flex;
+
+	margin: 1rem 0;
+}
+
+.loanCost {
+	border: 1px solid black;
+	border-radius: 3px;
+	margin: 1rem 0;
+	padding: 1rem;
 }
 
 .input {
 	border: 1px solid black;
 	border-radius: 3px;
+	width: 100%;
+	padding: 0 4px;
+}
+.interestInput {
+	border: 1px solid black;
+	border-radius: 3px;
+	margin: 0 2rem;
+	width: 5rem;
+}
+
+.checkInput {
 }
 
 .inputContainer {
@@ -12,6 +48,12 @@
 	flex-direction: column;
 	width: 20rem;
 	margin: 0 auto;
+}
+
+.checkboxes {
+	border: 1px solid black;
+	border-radius: 3px;
+	padding: 1rem;
 }
 
 .submitButton {

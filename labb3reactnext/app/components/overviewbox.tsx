@@ -2,7 +2,7 @@
 import { getOverviewData } from "../functions/functions";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { sourceItem, cashFlowItem } from "../types/overViewTypes";
+import { sourceItem, cashFlowItem } from "../types/someTypes";
 import { useEffect, useState } from "react";
 
 interface Overwiewbox {

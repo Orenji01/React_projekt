@@ -28,13 +28,13 @@ export interface savingsItem {
 	startDate: string;
 }
 export interface loanItem {
-	_id: ObjectId;
+	_id?: ObjectId;
 	id: number;
 	name: string;
-	amount: string;
-	perMonth: string;
-	interest: string | 0;
-	inflation: number;
+	amount: number | null;
+	perMonth: number | null;
+	interest: number | null;
+	inflation: boolean;
 	deductions: boolean;
 	targetDate: string;
 	startDate: string;
