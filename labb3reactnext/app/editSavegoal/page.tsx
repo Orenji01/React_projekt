@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
+import { log } from "console";
 
-type Inputs = {
+interface Inputs {
   _id: string;
   name: string;
   amount: number;
@@ -13,15 +14,19 @@ type Inputs = {
   inflation: number;
   targetDate: Date;
   startDate: Date;
-};
+}
 
 export default function Editsavegoal() {
   const [saveGoalInfo, setSaveGoalInfo] = useState([]);
 
   useEffect(() => {
     fetch("/api/public/savegoal")
-      .then((res) => res.json())
-      .then((data) => setSaveGoalInfo(data));
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+
+        setSaveGoalInfo(result);
+      });
   }, []);
   return (
     <div id={styles.saveGoalList}>
@@ -29,7 +34,7 @@ export default function Editsavegoal() {
         <Link
           className={styles.link}
           key={saveGoal._id}
-          href={`/editSavegoal/${saveGoal.name.toLowerCase()}`}
+          href={`/editSavegoal/${saveGoal._id.toString()}`}
         >
           <button className={styles.saveGoal}>{saveGoal.name}</button>
         </Link>

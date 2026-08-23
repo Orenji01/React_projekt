@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import styles from "./page.module.css";
 
-type Inputs = {
+interface Inputs {
   name: string;
   amount: number;
   perMonth: number;
@@ -11,7 +11,7 @@ type Inputs = {
   inflation: number;
   targetDate: Date;
   startDate: Date;
-};
+}
 
 export default function Savegoal() {
   const {
