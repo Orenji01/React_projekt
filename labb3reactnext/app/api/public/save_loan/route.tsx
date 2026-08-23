@@ -17,10 +17,12 @@ export async function POST(req: NextRequest) {
 	}
 	const body: loanItem = await req.json();
 
-	await mongo.collection<loanItem>("loans").insertOne(body);
+	const response = await mongo.collection<loanItem>("loans").insertOne(body);
+
+	console.log(response);
 
 	return NextResponse.json(
-		{ ok: true, message: "det gick nog bra... kanske" },
+		{ ok: true, message: "det gick nog bra... kanske", data: response },
 		{ status: 200 },
 	);
 }

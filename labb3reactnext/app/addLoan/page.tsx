@@ -32,36 +32,42 @@ export default function AddLoanPage() {
 		setStartDate("");
 	}
 
-	const firstMonthInterest =
-		amount !== null && interest !== null ? amount * (interest / 100 / 12) : 0;
+	// Mixade med dessa konstanter för att försöka få till något som justerade en avvikelse jag verkar ha i beräkingen av totala räntan... Skrotar dock den iden för stunden.
 
-	const firstMonthPayment =
-		amount !== null ? amount / months + firstMonthInterest : 0;
+	// const firstMonthInterest =
+	// 	amount !== null && interest !== null ? amount * (interest / 100 / 12) : 0;
 
-	// useEffect(() => {
-	// 	function calcMonthlyAmount() {
-	// 		if (!targetDate || !startDate || !amount) {
-	// 			return;
-	// 		}
-	// 		const target = new Date(targetDate);
-	// 		const start = new Date(startDate);
+	// const firstMonthPayment =
+	// 	amount !== null ? amount / months + firstMonthInterest : 0;
 
-	// 		let monthsDiff: number =
-	// 			1 +
-	// 			(target.getFullYear() - start.getFullYear()) * 12 +
-	// 			(target.getMonth() - start.getMonth());
+	function makeName(name: string) {
+		let newName;
+		if (name === "") {
+			const digits = () => {
+				const date = new Date();
+				const month = date.getMonth();
+				const year = date.getFullYear();
+				const milli = date.getMilliseconds();
+				return String(month + year + milli);
+			};
+			newName = "QuickAdd " + digits();
+		} else {
+			newName = name;
+		}
 
-	// 		if (target.getDate() < start.getDate()) {
-	// 			monthsDiff--;
-	// 		}
-	// 		if (monthsDiff > 0) {
-	// 			setPerMonth(Math.floor(Number(amount) / monthsDiff).toString());
-	// 		} else {
-	// 			setPerMonth(amount);
-	// 		}
-	// 	}
-	// 	calcMonthlyAmount();
-	// }, [amount, startDate, targetDate]);
+		return newName;
+	}
+
+	function makeInterest(int: number | null) {
+		let newInterest;
+		if (interest === null) {
+			newInterest = 0;
+		} else {
+			newInterest = int;
+		}
+
+		return newInterest;
+	}
 
 	useEffect(() => {
 		if (!amount || !months) return;
@@ -85,7 +91,7 @@ export default function AddLoanPage() {
 			let accumulated = 0;
 
 			const monthlyAmortization = amount / months;
-			// Skulle kunna använda "perMonth" här men... näää
+			// Skulle kunna använda "perMonth" här men genom att bara räkna ut kostnaden igen så slipper jag ta in variabeln i funktionen.
 			const monthlyInterest = interest / 100 / 12;
 
 			for (let month = 1; month <= months; month++) {
@@ -101,15 +107,12 @@ export default function AddLoanPage() {
 	}, [amount, months, interest]);
 
 	async function saveData() {
-		if (name === "") {
-			setName("Ett lån");
-		}
 		const loanData: loanItem = {
 			id: Date.now(),
-			name,
+			name: makeName(name),
 			amount: Number(amount),
-			perMonth: Number(amount),
-			interest: Number(amount),
+			perMonth: Number(perMonth),
+			interest: Number(makeInterest(interest)),
 			inflation,
 			deductions,
 			targetDate,
@@ -145,62 +148,54 @@ export default function AddLoanPage() {
 	}, [statusMessage]);
 
 	return (
-		<div>
-			<form onSubmit={saveData} className={styles.inputContainer}>
-				<label className={styles.label}>
-					Namn
-					<input
-						className={styles.input}
-						value={name}
-						onChange={(e) => {
-							setName(e.target.value);
-						}}
-					/>
-				</label>
-				<label className={styles.label}>
-					Summa*
-					<input
-						className={styles.input}
-						value={amount ?? ""}
-						placeholder={currency}
-						onChange={(e) => {
-							const value = e.target.value;
-							if (/^\d*(\.\d{0,2})?$/.test(value) || 0) {
-								setAmount(Number(value));
-							}
-						}}
-					/>{" "}
-				</label>
-				{/* <label className={styles.label}>
-					Amortering
-					<input
-						className={styles.input}
-						value={perMonth}
-						onChange={(e) => {
-							const value = e.target.value;
-							if (Number(value) > Number(amount)) {
-								setPerMonth(amount);
-								setStatusMessage("Kan inte överskrida totalsumman");
-							} else if (
-								/^\d*(\.\d{0,2})?$/.test(value) ||
-								Number(value) < Number(amount)
-							) {
-								setPerMonth(value);
-							}
-						}}
-					/>{" "}
-					{currency}
-				</label> */}
-				<div className={styles.loanCost}>
-					<label className={styles.slider}>
-						Avbetalningstid
+		<div className={styles.pageContainer}>
+			<form onSubmit={saveData} className={styles.inputForm}>
+				<div className={styles.baseInfo}>
+					<label className={styles.label}>
+						Namn
 						<input
 							className={styles.input}
+							value={name}
+							onChange={(e) => {
+								setName(e.target.value);
+							}}
+						/>
+					</label>
+
+					<label className={styles.label}>
+						Summa<span aria-hidden="true">*</span>
+						<input
+							className={styles.input}
+							value={amount === 0 || amount === null ? "" : amount}
+							aria-describedby="amountHelp"
+							placeholder={currency}
+							required
+							onChange={(e) => {
+								const value = e.target.value;
+								if (/^\d*(\.\d{0,2})?$/.test(value) || 0) {
+									setAmount(Number(value));
+								}
+							}}
+						/>{" "}
+						<span id="amountHelp" className={styles.screenReaderOnly}>
+							Belopp i jämna kronor
+						</span>
+					</label>
+				</div>
+				<div className={styles.loanCost}>
+					<label className={styles.sliderLabel}>
+						Avbetalningstid
+						<input
+							className={styles.inputSlider}
 							disabled={!amount}
 							value={months}
 							min="1"
 							max="60"
 							type="range"
+							aria-valuemin={1}
+							aria-valuemax={60}
+							aria-valuenow={months}
+							aria-valuetext={`${months} månader`}
 							onChange={(e) => {
 								setMonths(Number(e.target.value));
 							}}
@@ -208,26 +203,8 @@ export default function AddLoanPage() {
 						{months} Månader
 					</label>
 					Kostnad: {Math.floor(Number(perMonth))} per månad.{" "}
-					{/* <label className={styles.label}>
-					Måldatum
-					<input
-						className={styles.input}
-						value={targetDate}
-						onChange={(e) => {
-							if (startDate > e.target.value) {
-								setTargetDate(startDate);
-								setStatusMessage("Mål datum kan inte underskrida Startdatum");
-								return;
-							}
-							setTargetDate(e.target.value);
-
-							setStatusMessage("");
-						}}
-						type="date"
-					></input>
-				</label> */}
 					<label className={styles.interest}>
-						Ränta
+						Årsränta:
 						<input
 							type="number"
 							step="0.01"
@@ -247,7 +224,9 @@ export default function AddLoanPage() {
 						/>{" "}
 						%
 					</label>
-					<div>Total räntekostnad {interestCost}</div>
+					<div>
+						Total räntekostnad {interestCost} {currency}
+					</div>
 				</div>
 				<div className={styles.checkboxes}>
 					<label className={styles.labelCheck}>
@@ -276,22 +255,24 @@ export default function AddLoanPage() {
 						></input>
 					</label>
 				</div>
-				<label className={styles.label}>
-					Startdatum
-					<input
-						className={styles.input}
-						value={startDate}
-						onChange={(e) => {
-							setStartDate(e.target.value);
-						}}
-						type="date"
-					></input>
-				</label>
-				<p>* obligatoriska fält</p>
+				<div className={styles.StartDateContainer}>
+					<label className={styles.labelStarDate}>
+						Startdatum<span aria-hidden="true">*</span>
+						<input
+							className={styles.input}
+							value={startDate}
+							onChange={(e) => {
+								setStartDate(e.target.value);
+							}}
+							type="date"
+						></input>
+					</label>
+				</div>
+				<p>* obligatoriskt fält</p>
 				<input
 					type="submit"
 					className={styles.submitButton}
-					disabled={!name || !amount || !perMonth || !interest || !startDate}
+					disabled={!amount || !startDate}
 				/>
 				<p>{statusMessage}</p>
 			</form>
