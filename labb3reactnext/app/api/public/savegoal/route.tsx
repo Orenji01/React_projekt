@@ -2,39 +2,39 @@ import { getDB } from "@/lib/mongodbnext";
 import { NextResponse } from "next/server";
 
 interface Savegoal {
-	id: number;
-	name: string;
-	amount: number;
-	perMonth: number;
-	interest?: number;
-	inflation?: number;
-	targetDate: string;
-	startDate: string;
+  id: number;
+  name: string;
+  amount: number;
+  perMonth: number;
+  interest?: number;
+  inflation?: number;
+  targetDate: string;
+  startDate: string;
 }
 
 export async function GET() {
-	try {
-		const getDatabase = await getDB();
+  try {
+    const getDatabase = await getDB();
 
-		if (getDatabase === 0) {
-			return NextResponse.json(
-				{ ok: false, message: "No Db found" },
-				{ status: 500 },
-			);
-		}
+    if (getDatabase === 0) {
+      return NextResponse.json(
+        { ok: false, message: "No Db found" },
+        { status: 500 },
+      );
+    }
 
-		const saveGoalInfo = await getDatabase
-			.collection<Savegoal>("savegoal")
-			.find()
-			.toArray();
-		return NextResponse.json(saveGoalInfo);
-	} catch (error) {
-		if (error instanceof Error) {
-			return NextResponse.json({
-				error: error.message,
-			});
-		}
-	}
+    const saveGoalInfo = await getDatabase
+      .collection<Savegoal>("savegoal")
+      .find()
+      .toArray();
+    return NextResponse.json(saveGoalInfo);
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({
+        error: error.message,
+      });
+    }
+  }
 }
 
 export async function POST(request: Request) {
@@ -68,7 +68,12 @@ export async function POST(request: Request) {
 
     const getDatabase = await getDB();
 
-    /* const db = await getDatabase.db("budget"); */
+    if (getDatabase === 0) {
+      return NextResponse.json(
+        { ok: false, message: "No Db found" },
+        { status: 500 },
+      );
+    }
 
     const result = await getDatabase.collection("savegoal").insertOne({
       name,
