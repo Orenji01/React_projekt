@@ -29,7 +29,7 @@ export default function AddLoanPage() {
 		setInflation(false);
 		setDeductions(false);
 		setTargetDate("");
-		setStartDate("");
+		setStartDate(new Date().toISOString().split("T")[0]);
 	}
 
 	// Mixade med dessa konstanter för att försöka få till något som justerade en avvikelse jag verkar ha i beräkingen av totala räntan... Skrotar dock den iden för stunden.
@@ -40,6 +40,7 @@ export default function AddLoanPage() {
 	// const firstMonthPayment =
 	// 	amount !== null ? amount / months + firstMonthInterest : 0;
 
+	// Nedan ser du ett knapphändigt försök att generera ett lite random nummer. Inser att milli kan bli samma mellan olika submits men oddsen är åtminstone låga
 	function makeName(name: string) {
 		let newName;
 		if (name === "") {
@@ -106,7 +107,8 @@ export default function AddLoanPage() {
 		calcAccInterest();
 	}, [amount, months, interest]);
 
-	async function saveData() {
+	async function saveData(e: React.SubmitEvent<HTMLFormElement>) {
+		e.preventDefault();
 		const loanData: loanItem = {
 			id: Date.now(),
 			name: makeName(name),
@@ -149,6 +151,7 @@ export default function AddLoanPage() {
 
 	return (
 		<div className={styles.pageContainer}>
+			<h1 id={styles.header}>Lägg till nytt lån</h1>
 			<form onSubmit={saveData} className={styles.inputForm}>
 				<div className={styles.baseInfo}>
 					<label className={styles.label}>
@@ -156,10 +159,14 @@ export default function AddLoanPage() {
 						<input
 							className={styles.input}
 							value={name}
+							aria-describedby="nameHelp"
 							onChange={(e) => {
 								setName(e.target.value);
 							}}
 						/>
+						<span id="nameHelp" className={styles.screenReaderOnly}>
+							Namn på lånet
+						</span>
 					</label>
 
 					<label className={styles.label}>
@@ -168,7 +175,6 @@ export default function AddLoanPage() {
 							className={styles.input}
 							value={amount === 0 || amount === null ? "" : amount}
 							aria-describedby="amountHelp"
-							placeholder={currency}
 							required
 							onChange={(e) => {
 								const value = e.target.value;
@@ -176,9 +182,10 @@ export default function AddLoanPage() {
 									setAmount(Number(value));
 								}
 							}}
-						/>{" "}
+						/>
+						<div aria-hidden>{currency}</div>
 						<span id="amountHelp" className={styles.screenReaderOnly}>
-							Belopp i jämna kronor
+							Obligatoriskt, Belopp i jämna kronor
 						</span>
 					</label>
 				</div>
@@ -202,12 +209,15 @@ export default function AddLoanPage() {
 						/>
 						{months} Månader
 					</label>
-					Kostnad: {Math.floor(Number(perMonth))} per månad.{" "}
+
 					<label className={styles.interest}>
 						Årsränta:
 						<input
+							aria-describedby="interestHelp"
 							type="number"
 							step="0.01"
+							min={0}
+							max={500}
 							className={styles.interestInput}
 							value={interest ?? ""}
 							onChange={(e) => {
@@ -223,9 +233,24 @@ export default function AddLoanPage() {
 							}}
 						/>{" "}
 						%
+						<span id="interestHelp" className={styles.screenReaderOnly}>
+							Årlig ränta i procent
+						</span>
 					</label>
-					<div>
-						Total räntekostnad {interestCost} {currency}
+					<div aria-atomic="true" aria-live="polite">
+						Beräknad månadskostnad:<span aria-hidden> </span>
+						<strong>
+							{Math.floor(Number(perMonth))}
+							{currency}
+						</strong>
+					</div>
+					<div aria-atomic="true" aria-live="polite">
+						Total räntekostnad<span aria-hidden> </span>
+						<strong>
+							{interestCost}
+							<span aria-hidden> </span>
+							{currency}
+						</strong>
 					</div>
 				</div>
 				<div className={styles.checkboxes}>
@@ -269,12 +294,14 @@ export default function AddLoanPage() {
 					</label>
 				</div>
 				<p>* obligatoriskt fält</p>
+				<p
+					className={styles.statusMessage}
+				>{`Status: ${statusMessage ? statusMessage : "..."}`}</p>
 				<input
 					type="submit"
 					className={styles.submitButton}
 					disabled={!amount || !startDate}
 				/>
-				<p>{statusMessage}</p>
 			</form>
 		</div>
 	);
