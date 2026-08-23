@@ -2,8 +2,8 @@ import {
 	cashFlowItem,
 	sourceItem,
 	sourceResponse,
-} from "@/app/types/overViewTypes";
-import { cashflowResponse } from "@/app/types/overViewTypes";
+} from "@/app/types/someTypes";
+import { cashflowResponse } from "@/app/types/someTypes";
 
 export async function getOverviewData(
 	source: string,

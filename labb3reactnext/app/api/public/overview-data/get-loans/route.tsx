@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
 
-import { loanItem } from "@/app/types/overViewTypes";
+import { loanItem } from "@/app/types/someTypes";
 
 export async function GET() {
 	try {

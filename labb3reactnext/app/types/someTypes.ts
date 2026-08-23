@@ -11,6 +11,8 @@ export interface withId {
 	_id: ObjectId;
 }
 
+// Jag hade en tanke om att komprimera savingsItem, loanItem och cashFlowItem till ett interface som inehåller samtliga värden som förekommer och sätta "xx?" på de värden som inte förekommer över alla 3 datastrukturerna, alltså göra dem valfria, men det kändes som ett brott mot mänsklighten att medvetet använda interfaces som inte va avsedda för ändamålet, medveten om att transaktioner aldrig kommer inehålla ränta. I det fallet så hade man ju bara kunnat ha en gigantisk interface med alla eventuella värden som man använder över hela appen och bara göra alla värden valfria. Så här känns det som att DRY får ta ett baksäte.
+
 export interface dataResponse<items> {
 	ok: boolean;
 	message: string;
@@ -28,13 +30,13 @@ export interface savingsItem {
 	startDate: string;
 }
 export interface loanItem {
-	_id: ObjectId;
+	_id?: ObjectId;
 	id: number;
 	name: string;
-	amount: string;
-	perMonth: string;
-	interest: string | 0;
-	inflation: number;
+	amount: number | null;
+	perMonth: number | null;
+	interest: number | null;
+	inflation: boolean;
 	deductions: boolean;
 	targetDate: string;
 	startDate: string;

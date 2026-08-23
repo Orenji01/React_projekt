@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDB } from "@/lib/mongodbnext";
 // import { getDB } from "@/lib/mongodb";
 
-import { cashFlowItem } from "@/app/types/overViewTypes";
+import { cashFlowItem } from "@/app/types/someTypes";
 
 export async function GET() {
 	try {

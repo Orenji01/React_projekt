@@ -1,8 +1,8 @@
 .footer {
-    margin-top: auto;
-    padding:40px;
-    text-align: center;
-    background: gray;
-    color: white;
-    border-top: 1px solid black;
+	margin-top: auto;
+	padding: 40px;
+	text-align: center;
+	background: rgb(207, 207, 207);
+	color: black;
+	border-top: 1px solid black;
 }
