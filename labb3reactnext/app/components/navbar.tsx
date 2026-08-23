@@ -4,7 +4,7 @@ import styles from "./navbar.module.css";
 const Navbar = () => {
 	return (
 		<>
-			<nav role="navigation" className={styles.navbar}>
+			<nav className={styles.navbar}>
 				<ul>
 					<li>
 						<Link href="/">Hem</Link>
@@ -17,6 +17,9 @@ const Navbar = () => {
 					</li>
 					<li>
 						<Link href="addSavegoal">Nytt sparmål</Link>
+					</li>
+					<li>
+						<Link href="editSavegoal">Redigera sparmål</Link>
 					</li>
 					<li>
 						<Link href="addLoan">Nytt Lån</Link>
